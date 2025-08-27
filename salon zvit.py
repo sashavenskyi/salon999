@@ -20,7 +20,7 @@ import os
 import numpy as np
 
 # Завантаження даних
-@st.cache_data
+@st.cache_data(ttl=300) # Оновлює кеш кожні 5 хвилин
 def load_data(file_path):
     if not os.path.exists(file_path):
         st.error(f"Файл '{file_path}' не знайдено. Будь ласка, запустіть скрипт 'telegram_collector.py' для збору даних.")
