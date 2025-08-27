@@ -1,0 +1,36 @@
+name: Update Reports
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Запускає цей робочий процес кожні 15 хвилин
+
+jobs:
+  update-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run collector script and update CSV
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+        run: |
+          python telegram_collector.py
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add all_reports.csv
+          git commit -m "Automated update of all_reports.csv" || echo "No changes to commit"
+          git push
