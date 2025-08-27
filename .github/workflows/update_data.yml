@@ -2,8 +2,8 @@ name: Update Reports
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Цей рядок запускатиме робочий процес кожні 5 хвилин
-  workflow_dispatch:  # Цей рядок дозволяє запускати робочий процес вручну
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   update-and-commit:
@@ -33,5 +33,7 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add all_reports.csv
+          # Додано: отримуємо останні зміни з репозиторію
+          git pull origin main
           git commit -m "Automated update of all_reports.csv" || echo "No changes to commit"
           git push
