@@ -3,7 +3,7 @@ name: Update Reports
 on:
   schedule:
     - cron: '*/5 * * * *'  # Запускає робочий процес кожні 5 хвилин
-  workflow_dispatch:  # Дозволяє запускати робочий процес вручну через інтерфейс GitHub
+  workflow_dispatch:  # Дозволяє запускати робочий процес вручну
 
 jobs:
   update-and-commit:
@@ -27,12 +27,11 @@ jobs:
           TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
         run: |
           python telegram_collector.py
-
-      - name: Commit changes
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add all_reports.csv
-          git pull origin main  # Завантажує останні зміни з репозиторію
           git commit -m "Automated update of all_reports.csv" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
           git push
